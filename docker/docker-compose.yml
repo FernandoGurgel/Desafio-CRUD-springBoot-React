@@ -1,0 +1,36 @@
+version: "3"
+
+services:
+  postgres-db:
+    restart: always
+    image: postgres:9.6.0
+    container_name: postgresql
+    command: postgres -c max_connections=150
+    ports:
+      - 5435:5432
+    environment:
+      - POSTGRES_DB=creathus
+      - POSTGRES_PASSWORD=fg@2020
+    networks:
+      - creathus
+
+  backend:
+    restart: always
+    image: fagurgel/creathus-backend
+    ports:
+      - 8080:8080
+    environment:
+      postgres.hostname: postgresql
+      postgres.port: 5432
+    networks:
+      - creathus
+
+  frontend:
+    image: fagurgel/creathus-frontend
+    container_name: frontend
+    ports:
+      - 80:80
+    networks:
+      - creathus
+networks:
+  creathus:
